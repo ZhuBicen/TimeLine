@@ -14,7 +14,7 @@
   <div class="panel-heading">Task List</div>
   <div class="panel-body">
     <ol class="list-group">
-      <todo-item v-for="(index, item) in todoList" v-bind:todo="item"></todo-item>
+      <todo-item v-on:start="start" v-for="(index, item) in todoList" v-bind:todo="item" v-bind:id="index"></todo-item>
     </ol>
   </div>
 
@@ -28,8 +28,11 @@
 
 <script>
 Vue.component('todo-item', {
-  props: ['todo'],
-  template: '<li class="list-group-item"  v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active=false" >{{ todo.text }} {{ todo.used}}/{{todo.estimate}}<button v-show="todo.active" type="button" title="开始一个番茄" >Start</button></li>'
+  props: ['id', 'todo'],
+  template: '<li class="list-group-item"  v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active = false" >' + 
+    '{{ todo.text }} {{ todo.used}}/{{todo.estimate}}' + 
+    '<button class="btn btn-default" v-on:click="$emit(\'start\', id)" v-show="todo.active" type="button" title="开始一个番茄" >Start</button>' +
+    '</li>'
 })
 
 var app = new Vue({
@@ -43,8 +46,8 @@ var app = new Vue({
     ]
   },
   methods: {
-    mouseOverFunc: function () {
-      console.info("Mouseover");
+    start: function(taskId) {
+      console.info("Starting task for task:" + taskId)
     },
     newTask: function () {
 	    this.todoList.push({ text: this.newTaskContent })
