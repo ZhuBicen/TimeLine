@@ -29,7 +29,7 @@
 <script>
 Vue.component('todo-item', {
   props: ['todo'],
-  template: '<li class="list-group-item"  v-on:mouseover="todo.active = !todo.active">{{ todo.text }} {{ todo.used}}/{{todo.estimate}}<button v-show="todo.active" type="button" title="开始一个番茄" >Start</button></li>'
+  template: '<li class="list-group-item"  v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active=false" >{{ todo.text }} {{ todo.used}}/{{todo.estimate}}<button v-show="todo.active" type="button" title="开始一个番茄" >Start</button></li>'
 })
 
 var app = new Vue({
