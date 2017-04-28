@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Vue JS Intro</title>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
-	<script src ="./bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+    <script src ="./jQuery/jquery-1.11.1.min.js"></script>
+	  <script src ="./bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
 	<link   href="./bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -28,19 +29,22 @@
 <script>
 Vue.component('todo-item', {
   props: ['todo'],
-  template: '<li class="list-group-item">{{ todo.text }}<button type="button" title="开始一个番茄" >Start</button></li>'
+  template: '<li class="list-group-item"><div v-on="mouseover:{{todo.mouseOverFunc}}">{{ todo.text }} {{ todo.used}}/{{todo.estimate}}<button v-show="todo.active" type="button" title="开始一个番茄" >Start</button></div></li>'
 })
 var app = new Vue({
   el: '#app',
   data: {
     newTaskContent: "New Task",
     todoList: [
-      { text: '学习 Matlab' },
-      { text: '阅读 ReMapping 的代码' },
-      { text: '写一个新的升级平台的脚本' }
+      { active: true, text: '学习 Matlab', estimate: 1, used: 0, status: "notDone",  mouseOverFunc: function () {console.info("Mouseover");} },
+      { active: false, text: '阅读 ReMapping 的代码', estimate: 2, used: 0, status: "notDone",  mouseOverFunc: function () {console.info("Mouseover");}},
+      { active: false, text: '写一个新的升级平台的脚本', estimate: 3, used: 0, status: "notDone",  mouseOverFunc: function () {console.info("Mouseover");} }
     ]
   },
   methods: {
+    mouseOverFunc: function () {
+      console.info("Mouseover");
+    },
     newTask: function () {
 	    this.todoList.push({ text: this.newTaskContent })
     }
