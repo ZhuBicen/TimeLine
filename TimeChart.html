@@ -50,7 +50,7 @@
   <div class="panel-heading">Task List</div>
   <div class="panel-body">
     <ol class="list-group">
-      <todo-item v-on:start="start" v-for="(index, item) in todoList" v-bind:todo="item" v-bind:id="index"></todo-item>
+      <todo-item v-on:start="start" v-on:done="done"  v-for="(index, item) in todoList" v-bind:todo="item" v-bind:id="index"></todo-item>
     </ol>
   </div>
 
@@ -73,9 +73,10 @@
 
 Vue.component('todo-item', {
   props: ['id', 'todo'],
-  template: '<li class="list-group-item"  v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active = false" >' + 
+  template: '<li class="list-group-item"  v-bind:class="{done: todo.done}" v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active = false" >' + 
     '{{ todo.text }} {{ todo.used}}/{{todo.estimate}}' + 
     '<button class="btn btn-default" v-on:click="$emit(\'start\', id)" v-show="todo.active" type="button" title="开始一个番茄" >Start</button>' +
+    '<button class="btn btn-default" v-on:click="$emit(\'done\', id)" v-show="todo.active" type="button" title="完成任务" >Done</button>' +
     '</li>'
 })
 
@@ -87,8 +88,9 @@ var app = new Vue({
     todoList: []
   },
   created: function() {
-    console.debug("VUE create is called")
-    todoItems = JSON.parse(localStorage.getItem("todoItems"))
+    // localStorage.clear();
+    console.debug("VUE create is called");
+    todoItems = JSON.parse(localStorage.getItem("todoItems"));
     if (todoItems) {
       this.todoList = todoItems;
     }
@@ -98,7 +100,7 @@ var app = new Vue({
   watch: {
     todoList: {
       handler: function (val, oldVal) {
-        console.log('a thing changed')
+        console.log('a thing changed');
         localStorage.setItem("todoItems", JSON.stringify(this.todoList));
       },
       deep: true
@@ -107,10 +109,14 @@ var app = new Vue({
   methods: {
     start: function(taskId) {
       this.workId = taskId;
-      console.info("Starting task for task:" + taskId)
+      console.info("Starting task for task:" + taskId);
+    },
+    done: function(taskId) {
+      console.info("Make task done:", taskId);
+      this.todoList[taskId].done = true;
     },
     newTask: function () {
-	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:3, used:0, status:"notDone" })
+	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:3, used:0, done: false });
     }
   }
 })
