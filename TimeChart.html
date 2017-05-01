@@ -62,7 +62,7 @@
  
   </div>
 
- <modal v-if="workId != -1" @close="workId = -1" v-bind:percent="70">
+ <modal v-if="workId != -1" @close="workId = -1" v-bind:percent="percent">
 </div>
 
 <script>
@@ -86,6 +86,7 @@ var app = new Vue({
   data: {
     newTaskContent: "New Task",
     workId: -1,
+    percent: 0,
     todoList: []
   },
   created: function() {
@@ -110,7 +111,25 @@ var app = new Vue({
   methods: {
     start: function(taskId) {
       this.workId = taskId;
+      this.percent = 0;
       console.info("Starting task for task:" + taskId);
+      var self = this;
+      var d = new Date();
+      var startTime = d.getTime();
+      var interval = setInterval(function() {
+        self.percent = self.percent + 10;
+        var n = new Date();
+        var nowTime = n.getTime();
+        var minutes = Math.round((nowTime - startTime) / 1000 * 60);
+        self.percent = 100 *  minutes / 25;
+        console.log("Updating to:", minutes, "  ", self.percent);
+      }, 1000 * 30)
+      setTimeout(function() {
+        self.todoList[self.workId].used = self.todoList[self.workId].used + 1;
+        self.workId = -1;
+        self.percent = 100;
+        clearInterval(interval);
+      }, 25 * 60 * 60 * 1000)
     },
     done: function(taskId) {
       console.info("Make task done:", taskId);
