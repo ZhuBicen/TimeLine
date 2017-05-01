@@ -84,11 +84,25 @@ var app = new Vue({
   data: {
     newTaskContent: "New Task",
     workId: -1,
-    todoList: [
-      { active: false, text: '学习 Matlab', estimate: 1, used: 0, status: "notDone" },
-      { active: false, text: '阅读 ReMapping 的代码', estimate: 2, used: 0, status: "notDone"},
-      { active: false, text: '写一个新的升级平台的脚本', estimate: 3, used: 0, status: "notDone" }
-    ]
+    todoList: []
+  },
+  created: function() {
+    console.debug("VUE create is called")
+    todoItems = JSON.parse(localStorage.getItem("todoItems"))
+    if (todoItems) {
+      this.todoList = todoItems;
+    }
+  },
+  updated: function() {   
+  },
+  watch: {
+    todoList: {
+      handler: function (val, oldVal) {
+        console.log('a thing changed')
+        localStorage.setItem("todoItems", JSON.stringify(this.todoList));
+      },
+      deep: true
+    }
   },
   methods: {
     start: function(taskId) {
@@ -96,7 +110,7 @@ var app = new Vue({
       console.info("Starting task for task:" + taskId)
     },
     newTask: function () {
-	    this.todoList.push({ text: this.newTaskContent })
+	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:3, used:0, status:"notDone" })
     }
   }
 })
