@@ -57,6 +57,7 @@
   <div class="panel-footer">
     <div class="form-group">
       <input type="text" class="form-control"  v-model="newTaskContent" placeholder="input new task here">
+      <input type="text" class="form-control"  v-model="newTaskEstimatedTomoto">
       <button v-on:click="newTask" class="btn btn-default">Add New Task</button>
     </div>
  
@@ -77,7 +78,7 @@ Vue.component('todo-item', {
     '{{ todo.text }} {{ todo.used}}/{{todo.estimate}}' + 
     '<button class="btn btn-default" v-on:click="$emit(\'start\', id)" v-show="todo.active && !todo.done" type="button" title="开始一个番茄" >Start</button>' +
     '<button class="btn btn-default" v-on:click="$emit(\'done\', id)" v-show="todo.active && !todo.done" type="button" title="完成任务" >Done</button>' +
-    '<button class="btn btn-default" v-on:click="$emit(\'delete\', id)" v-show="todo.active && todo.done" type="button" title="完成任务" >Delete</button>' +
+    '<button class="btn btn-default" v-on:click="$emit(\'delete\', id)" v-show="todo.active && todo.done" type="button" title="删除任务" >Delete</button>' +
     '</li>'
 })
 
@@ -87,6 +88,7 @@ var app = new Vue({
   data: {
     tomatoTime: 25,
     newTaskContent: "New Task",
+    newTaskEstimatedTomoto: 1,
     workId: -1,
     percent: 0,
     todoList: []
@@ -141,7 +143,7 @@ var app = new Vue({
       this.todoList.splice(taskId, 1);
     },
     newTask: function () {
-	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:3, used:0, done: false });
+	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:this.newTaskEstimatedTomoto, used:0, done: false });
     }
   }
 })
