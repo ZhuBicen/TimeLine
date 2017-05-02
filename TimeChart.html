@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Vue JS Intro</title>
+    <title>TimeChart</title>
     <script src ="./jQuery/jquery-1.11.1.min.js"></script>
 	  <script src ="./bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
@@ -82,11 +82,50 @@ Vue.component('todo-item', {
     '</li>'
 })
 
+// request permission on page load
+document.addEventListener('DOMContentLoaded', function () {
+  if (!Notification) {
+    alert('Desktop notifications not available in your browser. Try Chromium.'); 
+    return;
+  }
+
+  if (Notification.permission !== "granted")
+    Notification.requestPermission();
+});
+
+function notifyMe() {
+  if (Notification.permission !== "granted")
+    Notification.requestPermission();
+  else {
+    var notification = new Notification('Notification title', {
+      icon: 'so-icon.png',
+      body: "Hey there! You've been notified!",
+    });
+
+    notification.onclick = function () {
+      window.open("http://stackoverflow.com/a/13328397/1269037");      
+    };
+
+  }
+
+}
+
+// function notifyMe2() {
+
+//     chrome.notifications.create('reminder', {
+//         type: 'basic',
+//         iconUrl: 'icon.png',
+//         title: 'Don\'t forget!',
+//         message: 'You have  things to do. Wake up, dude!'
+//     }, function(notificationId) {});
+
+// }
+
 var app = new Vue({
   el: '#app',
 
   data: {
-    tomatoTime: 25,
+    tomatoTime: 1 * 60 * 1000, // million seconds
     newTaskContent: "New Task",
     newTaskEstimatedTomoto: 1,
     workId: -1,
@@ -124,7 +163,7 @@ var app = new Vue({
         self.percent = self.percent + 10;
         var n = new Date();
         var nowTime = n.getTime();
-        self.percent = ((nowTime - startTime) * 100)/ (self.tomatoTime * 60 * 1000);
+        self.percent = ((nowTime - startTime) * 100)/ (self.tomatoTime);
         console.log("current percent:", self.percent);
       }, 1000 * 3)
       setTimeout(function() {
@@ -132,7 +171,8 @@ var app = new Vue({
         self.workId = -1;
         self.percent = 100;
         clearInterval(interval);
-      }, self.tomatoTime * 60 * 60 * 1000)
+        notifyMe();
+      }, self.tomatoTime)
     },
     done: function(taskId) {
       console.info("Make task done:", taskId);
