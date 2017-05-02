@@ -83,7 +83,9 @@ Vue.component('todo-item', {
 
 var app = new Vue({
   el: '#app',
+
   data: {
+    tomatoTime: 25,
     newTaskContent: "New Task",
     workId: -1,
     percent: 0,
@@ -120,16 +122,15 @@ var app = new Vue({
         self.percent = self.percent + 10;
         var n = new Date();
         var nowTime = n.getTime();
-        var minutes = Math.round((nowTime - startTime) / 1000 * 60);
-        self.percent = 100 *  minutes / 25;
-        console.log("Updating to:", minutes, "  ", self.percent);
-      }, 1000 * 30)
+        self.percent = ((nowTime - startTime) * 100)/ (self.tomatoTime * 60 * 1000);
+        console.log("current percent:", self.percent);
+      }, 1000 * 3)
       setTimeout(function() {
         self.todoList[self.workId].used = self.todoList[self.workId].used + 1;
         self.workId = -1;
         self.percent = 100;
         clearInterval(interval);
-      }, 25 * 60 * 60 * 1000)
+      }, self.tomatoTime * 60 * 60 * 1000)
     },
     done: function(taskId) {
       console.info("Make task done:", taskId);
