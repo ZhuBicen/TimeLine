@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>TimeChart</title>
-    <script src ="./notify.js"></script>
+    <script src ="./js/notify.js"></script>
     <script src ="./jQuery/jquery-1.11.1.min.js"></script>
 	<script src ="./bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
 
@@ -132,6 +132,9 @@ function notifyMe() {
             }
 
 }
+  if (Notify.needsPermission && Notify.isSupported()) {
+     Notify.requestPermission(null, null);
+  }
 
 var app = new Vue({
   el: '#app',
