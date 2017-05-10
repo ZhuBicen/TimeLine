@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <title>TimeChart</title>
     <script src ="./js/notify.js"></script>
-    <script src ="./jQuery/jquery-1.11.1.min.js"></script>
-	<script src ="./bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+    <script src ="./js/jquery-1.11.1.min.js"></script>
+    <script src ="./js/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+    <script src ="./js/vue.min.js"></script>
+    <link   href="./js/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link   href="./css/main.css" rel="stylesheet">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
-
-	<link   href="./bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
-  <link   href="./TimeChart.css" rel="stylesheet">
 </head>
 <body>
 <script type="text/x-template" id="modal-template">
@@ -132,9 +131,6 @@ function notifyMe() {
             }
 
 }
-  if (Notify.needsPermission && Notify.isSupported()) {
-     Notify.requestPermission(null, null);
-  }
 
 var app = new Vue({
   el: '#app',
