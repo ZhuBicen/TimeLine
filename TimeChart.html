@@ -25,7 +25,7 @@
 
           <div class="modal-body">
             <slot name="body">
-                  <div v-show="workId != -1" class="progress">
+                  <div class="progress">
                       <div  class="progress-bar" role="progressbar" aria-valuenow="{{percent}}" aria-valuemin="0" aria-valuemax="100" style="width:{{percent}}%">
                          <span class="sr-only">70% Complete</span>
                       </div>
