@@ -1,0 +1,129 @@
+function notifyMe() {
+    function onShowNotification () {
+        console.log('notification is shown!');
+    }
+
+    function onCloseNotification () {
+        console.log('notification is closed!');
+    }
+
+    function onClickNotification () {
+        console.log('notification was clicked!');
+    }
+
+    function onErrorNotification () {
+        console.error('Error showing notification. You may need to request permission.');
+    }
+
+    function onPermissionGranted () {
+        console.log('Permission has been granted by the user');
+        doNotification();
+    }
+
+    function onPermissionDenied () {
+        console.warn('Permission has been denied by the user');
+    }
+
+    function doNotification () {
+        var myNotification = new Notify('Yo dawg!', {
+            body: 'This is an awesome notification',
+            tag: 'My unique id',
+            notifyShow: onShowNotification,
+            notifyClose: onCloseNotification,
+            notifyClick: onClickNotification,
+            notifyError: onErrorNotification,
+            timeout: 4
+        });
+
+        myNotification.show();
+    }
+
+    if (!Notify.needsPermission) {
+        doNotification();
+    } else if (Notify.isSupported()) {
+        Notify.requestPermission(onPermissionGranted, onPermissionDenied);
+    }
+
+}
+
+Vue.component('modal', {
+   	props:['percent'],
+  	template: '#modal-template'
+})
+
+Vue.component('todo-item', {
+  props: ['id', 'todo'],
+  template: '<li class="list-group-item"  v-bind:class="{disabled: todo.done}" v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active = false" >' + 
+    '{{ todo.text }} {{ todo.used}}/{{todo.estimate}}' + 
+    '<button class="btn btn-default" v-on:click="$emit(\'start\', id)" v-show="todo.active && !todo.done" type="button" title="开始一个番茄" >Start</button>' +
+    '<button class="btn btn-default" v-on:click="$emit(\'done\', id)" v-show="todo.active && !todo.done" type="button" title="完成任务" >Done</button>' +
+    '<button class="btn btn-default" v-on:click="$emit(\'delete\', id)" v-show="todo.active && todo.done" type="button" title="删除任务" >Delete</button>' +
+    '</li>'
+})
+
+var app = new Vue({
+  el: '#app',
+
+  data: {
+    tomatoTime: 0.3 * 60 * 1000, // million seconds
+    newTaskContent: "New Task",
+    newTaskEstimatedTomoto: 1,
+    workId: -1,
+    percent: 0,
+    todoList: []
+  },
+  created: function() {
+    // localStorage.clear();
+    console.debug("VUE create is called");
+    todoItems = JSON.parse(localStorage.getItem("todoItems"));
+    if (todoItems) {
+      this.todoList = todoItems;
+    }
+  },
+  updated: function() {   
+  },
+  watch: {
+    todoList: {
+      handler: function (val, oldVal) {
+        console.log('a thing changed');
+        localStorage.setItem("todoItems", JSON.stringify(this.todoList));
+      },
+      deep: true
+    }
+  },
+  methods: {
+    start: function(taskId) {
+      this.workId = taskId;
+      this.percent = 0;
+      console.info("Starting task for task:" + taskId);
+      var self = this;
+      var d = new Date();
+      var startTime = d.getTime();
+      var interval = setInterval(function() {
+        self.percent = self.percent + 10;
+        var n = new Date();
+        var nowTime = n.getTime();
+        self.percent = ((nowTime - startTime) * 100)/ (self.tomatoTime);
+        console.log("current percent:", self.percent);
+      }, 1000 * 3)
+      setTimeout(function() {
+        self.todoList[self.workId].used = self.todoList[self.workId].used + 1;
+        self.workId = -1;
+        self.percent = 100;
+        clearInterval(interval);
+        notifyMe();
+      }, self.tomatoTime)
+    },
+    done: function(taskId) {
+      console.info("Make task done:", taskId);
+      this.todoList[taskId].done = true;
+    },
+    delete: function(taskId) {
+      console.info("Delete", taskId);
+      this.todoList.splice(taskId, 1);
+    },
+    newTask: function () {
+	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:this.newTaskEstimatedTomoto, used:0, done: false });
+    }
+  }
+})
