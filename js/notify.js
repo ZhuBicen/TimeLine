@@ -9,18 +9,42 @@ document.addEventListener('DOMContentLoaded', function () {
     Notification.requestPermission();
 });
 
-function notifyMe() {
+function notifyRest() {
   if (Notification.permission !== "granted")
     Notification.requestPermission();
   else {
     var notification = new Notification('Reminder', {
       icon: 'images/tomato.jpg',
-      body: "Hey there! You have finished a tomato, Pleaes have a rest",
+      body: "You have just finished a tomato, Let's have a rest",
+	  requireInteraction : true,
+    });
+	setTimeout(function(){
+	    notification.close();
+		notifyWork();
+	}, 1 * 60 * 1000);  // 5 minues rest
+
+    notification.onclick = function () {
+      window.open("http://stackoverflow.com/a/13328397/1269037");      
+    };
+
+  }
+}
+
+function notifyWork() {
+  if (Notification.permission !== "granted")
+    Notification.requestPermission();
+  else {
+    var notification = new Notification('Reminder', {
+      icon: 'images/gree_tomato.jpg',
+      body: "Hey there! Please start a new tomato",
 	  requireInteraction : true,
     });
 
     notification.onclick = function () {
-      window.open("http://stackoverflow.com/a/13328397/1269037");      
+	  window.focus();
+	  //this.cancel();
+      // window.open("http://localhost:3000/TimeChart.html");      
+	  notification.close();
     };
 
   }

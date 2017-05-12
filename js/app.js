@@ -65,7 +65,7 @@ var app = new Vue({
         self.workId = -1;
         self.percent = 100;
         clearInterval(interval);
-        notifyMe();
+        notifyRest();
       }, self.tomatoTime)
     },
     done: function(taskId) {
