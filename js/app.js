@@ -13,6 +13,16 @@ Vue.component('todo-item', {
     '</li>'
 })
 
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+    //  '#'+Math.floor(Math.random()*16777215).toString(16);
+}
+
 var app = new Vue({
   el: '#app',
 
@@ -66,12 +76,14 @@ var app = new Vue({
       .append("svg")
       .attr("width",  500)
       .attr("height", 500)
+      .selectAll("circle")
       .data(tomatoesToShow)
+      .enter()
       .append("circle")
       .attr("cx", function(d) { return Math.random() * (500 - 2 * self.radius) + self.radius; })
       .attr("cy", function(d) { return Math.random() * (500 - 2 * self.radius) + self.radius; })
       .attr("r", self.radius)
-      .attr("fill", "#FFCE00"); 
+      .attr("fill", function(d) { return getRandomColor();}); 
 
   },
   updated: function() {   
