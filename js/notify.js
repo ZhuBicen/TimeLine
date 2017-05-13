@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     Notification.requestPermission();
 });
 
-function notifyRest() {
+function notifyRest(restTime) {
   if (Notification.permission !== "granted")
     Notification.requestPermission();
   else {
@@ -21,7 +21,7 @@ function notifyRest() {
 	setTimeout(function(){
 	    notification.close();
 		notifyWork();
-	}, 1 * 60 * 1000);  // 5 minues rest
+	}, restTime);  // 5 minues rest
 
     notification.onclick = function () {
       window.open("http://stackoverflow.com/a/13328397/1269037");      

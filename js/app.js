@@ -28,7 +28,8 @@ var app = new Vue({
 
   data: {
     radius: 40,
-    tomatoTime: 0.1 * 60 * 1000, // million seconds
+    tomatoTime: 25 * 60 * 1000, // million seconds
+    restTime: 5 * 60 * 1000,
     newTaskContent: "Please input new task",
     estimatedTomato: 1,
     workId: -1,
@@ -118,7 +119,7 @@ var app = new Vue({
         self.workId = -1;
         self.percent = 100;
         clearInterval(interval);
-        notifyRest();
+        notifyRest(self.restTime);
 
         d3.select("svg")
           .append("circle")
