@@ -17,20 +17,61 @@ var app = new Vue({
   el: '#app',
 
   data: {
-    tomatoTime: 0.3 * 60 * 1000, // million seconds
+    tomatoTime: 0.1 * 60 * 1000, // million seconds
     newTaskContent: "Please input new task",
     estimatedTomato: 1,
     workId: -1,
     percent: 0,
-    todoList: []
+    todoList: [],
+    startTime: 0,
+    endTime: 0,
   },
   created: function() {
-    localStorage.clear();
+    ////////////////////////////////////
+    // localStorage.clear();
+    ////////////////////////////////////
     console.debug("VUE create is called");
     todoItems = JSON.parse(localStorage.getItem("todoItems"));
     if (todoItems) {
       this.todoList = todoItems;
     }
+    var now = new Date();
+    console.log("Now time is:", now.getTime());
+    console.log("Now time is:", now);
+
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    this.startTime = today.getTime();
+
+    console.log("Start time is:", today);
+    console.log("Start time is:", this.startTime);
+
+    this.endTime = this.startTime + 24  * 60 * 60 * 1000;
+    console.log("End time is:", this.endTime);
+
+    var tomatoesToShow = [];
+    var self = this;
+    this.todoList.forEach(function(taskItem) {
+      taskItem.used.forEach(function(tomato) {
+        if (tomato >= self.startTime && tomato <= self.endTime) {
+            tomatoesToShow.push(tomato);
+        }
+      })
+    })
+
+    console.log(tomatoesToShow);
+
+    d3.select("#TimeLine")
+      .append("svg")
+      .attr("width", "100%")
+      .attr("height", 50)
+      .append("rect")
+      .attr("class", "nodes")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", "100%")
+      .attr("height", 50)
+      .attr("fill", "#FFCE00"); 
+
   },
   updated: function() {   
   },
@@ -60,6 +101,7 @@ var app = new Vue({
       }, 1000 * 3)
       setTimeout(function() {
         self.todoList[self.workId].used.push(new Date().getTime());
+
         self.workId = -1;
         self.percent = 100;
         clearInterval(interval);

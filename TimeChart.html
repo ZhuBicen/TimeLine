@@ -9,6 +9,7 @@
     <script src ="./js/vue.min.js"></script>
 	  <link   href="./js/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
     <link   href="./css/main.css" rel="stylesheet">
+    <script src ="./js/d3/d3.js"></script> 
 </head>
 <body>
 <script type="text/x-template" id="modal-template">
@@ -67,8 +68,9 @@
   </div>
 
  <modal v-if="workId != -1" @close="workId = -1" v-bind:percent="percent">
-</div>
 
+</div>
+ <div id="TimeLine"></div>  
 <script src ="./js/app.js"></script>
 </body>
 </html>
