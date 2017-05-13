@@ -119,6 +119,13 @@ var app = new Vue({
         self.percent = 100;
         clearInterval(interval);
         notifyRest();
+
+        d3.select("svg")
+          .append("circle")
+          .attr("cx", function(d) { return Math.random() * (500 - 2 * self.radius) + self.radius; })
+          .attr("cy", function(d) { return Math.random() * (500 - 2 * self.radius) + self.radius; })
+          .attr("r", self.radius)
+          .attr("fill", function(d) { return getRandomColor();}); 
       }, self.tomatoTime)
     },
     done: function(taskId) {
