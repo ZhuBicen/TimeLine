@@ -17,6 +17,7 @@ var app = new Vue({
   el: '#app',
 
   data: {
+    radius: 40,
     tomatoTime: 0.1 * 60 * 1000, // million seconds
     newTaskContent: "Please input new task",
     estimatedTomato: 1,
@@ -60,16 +61,16 @@ var app = new Vue({
 
     console.log(tomatoesToShow);
 
+
     d3.select("#TimeLine")
       .append("svg")
-      .attr("width", "100%")
-      .attr("height", 50)
-      .append("rect")
-      .attr("class", "nodes")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("width", "100%")
-      .attr("height", 50)
+      .attr("width",  500)
+      .attr("height", 500)
+      .data(tomatoesToShow)
+      .append("circle")
+      .attr("cx", function(d) { return Math.random() * (500 - 2 * self.radius) + self.radius; })
+      .attr("cy", function(d) { return Math.random() * (500 - 2 * self.radius) + self.radius; })
+      .attr("r", self.radius)
       .attr("fill", "#FFCE00"); 
 
   },
