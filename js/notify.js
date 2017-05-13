@@ -36,7 +36,7 @@ function notifyWork() {
   else {
     var notification = new Notification('Reminder', {
       icon: 'images/gree_tomato.jpg',
-      body: "Hey there! Please start a new tomato",
+      body: "The break time is over. It's time to do a tomato",
 	  requireInteraction : true,
     });
 

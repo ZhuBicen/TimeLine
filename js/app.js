@@ -1,14 +1,12 @@
-
-
-Vue.component('modal', {
-   	props:['percent'],
-  	template: '#modal-template'
+ Vue.component('modal', {
+   props:['percent'],
+  template: '#modal-template'
 })
 
 Vue.component('todo-item', {
   props: ['id', 'todo'],
   template: '<li class="list-group-item"  v-bind:class="{disabled: todo.done}" v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active = false" >' + 
-    '{{ todo.text }} {{ todo.used}}/{{todo.estimate}}' + 
+    '{{ todo.text }} {{ todo.used.length }}/{{todo.estimate}}' + 
     '<button class="btn btn-default" v-on:click="$emit(\'start\', id)" v-show="todo.active && !todo.done" type="button" title="开始一个番茄" >Start</button>' +
     '<button class="btn btn-default" v-on:click="$emit(\'done\', id)" v-show="todo.active && !todo.done" type="button" title="完成任务" >Done</button>' +
     '<button class="btn btn-default" v-on:click="$emit(\'delete\', id)" v-show="todo.active && todo.done" type="button" title="删除任务" >Delete</button>' +
@@ -20,14 +18,14 @@ var app = new Vue({
 
   data: {
     tomatoTime: 0.3 * 60 * 1000, // million seconds
-    newTaskContent: "New Task",
-    newTaskEstimatedTomoto: 1,
+    newTaskContent: "Please input new task",
+    estimatedTomato: 1,
     workId: -1,
     percent: 0,
     todoList: []
   },
   created: function() {
-    // localStorage.clear();
+    localStorage.clear();
     console.debug("VUE create is called");
     todoItems = JSON.parse(localStorage.getItem("todoItems"));
     if (todoItems) {
@@ -61,7 +59,7 @@ var app = new Vue({
         console.log("current percent:", self.percent);
       }, 1000 * 3)
       setTimeout(function() {
-        self.todoList[self.workId].used = self.todoList[self.workId].used + 1;
+        self.todoList[self.workId].used.push(new Date().getTime());
         self.workId = -1;
         self.percent = 100;
         clearInterval(interval);
@@ -77,7 +75,9 @@ var app = new Vue({
       this.todoList.splice(taskId, 1);
     },
     newTask: function () {
-	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:this.newTaskEstimatedTomoto, used:0, done: false });
+	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:this.estimatedTomato, used:[], done: false });
+      this.newTaskContent = "Please input new task";
+      this.estimatedTomato = 1;
     }
   }
 })

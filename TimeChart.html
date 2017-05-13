@@ -7,7 +7,7 @@
     <script src ="./js/jquery-1.11.1.min.js"></script>
     <script src ="./js/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
     <script src ="./js/vue.min.js"></script>
-    <link   href="./js/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+	  <link   href="./js/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
     <link   href="./css/main.css" rel="stylesheet">
 </head>
 <body>
@@ -25,7 +25,7 @@
 
           <div class="modal-body">
             <slot name="body">
-                  <div class="progress">
+                  <div v-show="workId != -1" class="progress">
                       <div  class="progress-bar" role="progressbar" aria-valuenow="{{percent}}" aria-valuemin="0" aria-valuemax="100" style="width:{{percent}}%">
                          <span class="sr-only">70% Complete</span>
                       </div>
@@ -55,19 +55,20 @@
     </ol>
   </div>
 
-  <div class="panel-footer">
+  <div class="panel panel-default">
     <div class="form-group">
       <input type="text" class="form-control"  v-model="newTaskContent" placeholder="input new task here">
-      <input type="text" class="form-control"  v-model="newTaskEstimatedTomoto">
+      <input type="text" class="form-control"  v-model="estimatedTomato">
       <button v-on:click="newTask" class="btn btn-default">Add New Task</button>
-    </div>
- 
+    </div> 
+  </div>
+  <div class = "panel panel-default">
+    
   </div>
 
  <modal v-if="workId != -1" @close="workId = -1" v-bind:percent="percent">
 </div>
 
 <script src ="./js/app.js"></script>
-
 </body>
 </html>
