@@ -71,12 +71,36 @@ var app = new Vue({
     })
 
     console.log(tomatoesToShow);
-
-
-    d3.select("#TimeLine")
+    d3.select("#TimeLineDiv")
       .append("svg")
-      .attr("width",  500)
-      .attr("height", 500)
+      .attr("id", "TimeLine")
+      .attr("width", "100%")
+      .attr("height", "100%");
+
+
+
+      var timeLineSvg = document.getElementById('TimeLine');
+      console.log('client', timeLineSvg.clientWidth + ' x ' + timeLineSvg.clientHeight);
+
+      var x_scale = d3.scaleLinear()
+                            .range([0, timeLineSvg.clientWidth])
+                            .domain([self.startTime, self.endTime]);
+      console.log("Width for 25 minutes:", x_scale(self.startTime +  25 * 60 * 1000));
+      console.log("Now time is:", x_scale(now.getTime()));
+
+      d3.select("#TimeLine")
+      .append("rect")
+      .attr("x", x_scale(now.getTime()))
+      .attr("y", 0)
+      .attr("width", x_scale(self.startTime + (25 * 60 * 1000)))
+      .attr("height", timeLineSvg.clientHeight)
+      .attr("style", "fill:blue;stroke:pink;stroke-width:1;fill-opacity:0.1;stroke-opacity:0.9");
+
+
+    d3.select("#TimeChart")
+      .append("svg")
+      .attr("width",  "100%")
+      .attr("height", "100%")
       .selectAll("circle")
       .data(tomatoesToShow)
       .enter()
@@ -121,7 +145,8 @@ var app = new Vue({
         clearInterval(interval);
         notifyRest(self.restTime);
 
-        d3.select("svg")
+        d3.select("#TimeChart")
+          .select("svg")
           .append("circle")
           .attr("cx", function(d) { return Math.random() * (500 - 2 * self.radius) + self.radius; })
           .attr("cy", function(d) { return Math.random() * (500 - 2 * self.radius) + self.radius; })
