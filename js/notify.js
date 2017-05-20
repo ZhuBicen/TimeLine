@@ -20,7 +20,7 @@ function notifyRest(restTime) {
     });
 	setTimeout(function(){
 	    notification.close();
-		notifyWork();
+		  notifyWork();
 	}, restTime);  // 5 minues rest
 
     notification.onclick = function () {

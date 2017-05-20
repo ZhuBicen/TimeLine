@@ -22,7 +22,7 @@ function getRandomColor() {
     return color;
     //  '#'+Math.floor(Math.random()*16777215).toString(16);
 }
-
+var x_scale;
 var app = new Vue({
   el: '#app',
 
@@ -71,43 +71,33 @@ var app = new Vue({
     })
 
     console.log(tomatoesToShow);
-    d3.select("#TimeLineDiv")
-      .append("svg")
-      .attr("id", "TimeLine")
-      .attr("width", "100%")
-      .attr("height", "100%");
-
-
 
       var timeLineSvg = document.getElementById('TimeLine');
       console.log('client', timeLineSvg.clientWidth + ' x ' + timeLineSvg.clientHeight);
 
-      var x_scale = d3.scaleLinear()
+      x_scale = d3.scaleLinear()
                             .range([0, timeLineSvg.clientWidth])
                             .domain([self.startTime, self.endTime]);
-      console.log("Width for 25 minutes:", x_scale(self.startTime +  25 * 60 * 1000));
-      console.log("Now time is:", x_scale(now.getTime()));
+
 
       d3.select("#TimeLine")
-      .append("rect")
-      .attr("x", x_scale(now.getTime()))
-      .attr("y", 0)
-      .attr("width", x_scale(self.startTime + (25 * 60 * 1000)))
-      .attr("height", timeLineSvg.clientHeight)
-      .attr("style", "fill:blue;stroke:pink;stroke-width:1;fill-opacity:0.1;stroke-opacity:0.9");
+      .append("line")
+      .attr("x1", 0)
+      .attr("y1", 3)
+      .attr("x2", timeLineSvg.clientWidth)
+      .attr("y2", 0)
+      .attr("style", "stroke-width:3;stroke:rgb(255,0,0);");
 
 
-    d3.select("#TimeChart")
-      .append("svg")
-      .attr("width",  "100%")
-      .attr("height", "100%")
-      .selectAll("circle")
+    d3.select("#TimeLine")
+      .selectAll("rect")
       .data(tomatoesToShow)
       .enter()
-      .append("circle")
-      .attr("cx", function(d) { return Math.random() * (500 - 2 * self.radius) + self.radius; })
-      .attr("cy", function(d) { return Math.random() * (500 - 2 * self.radius) + self.radius; })
-      .attr("r", self.radius)
+      .append("rect")
+      .attr("x", function(d) { return x_scale(d); })
+      .attr("y", 0)
+      .attr("width", x_scale(self.startTime + self.tomatoTime))
+      .attr("height", 50)// to be extract as const, deinfed in html
       .attr("fill", function(d) { return getRandomColor();}); 
 
   },
@@ -138,19 +128,19 @@ var app = new Vue({
         console.log("current percent:", self.percent);
       }, 1000 * 3)
       setTimeout(function() {
-        self.todoList[self.workId].used.push(new Date().getTime());
+        self.todoList[self.workId].used.push(startTime);
 
         self.workId = -1;
         self.percent = 100;
         clearInterval(interval);
         notifyRest(self.restTime);
 
-        d3.select("#TimeChart")
-          .select("svg")
-          .append("circle")
-          .attr("cx", function(d) { return Math.random() * (500 - 2 * self.radius) + self.radius; })
-          .attr("cy", function(d) { return Math.random() * (500 - 2 * self.radius) + self.radius; })
-          .attr("r", self.radius)
+        d3.select("#TimeLine")
+          .append("rect")
+          .attr("x", function(d) { return x_scale(startTime); })
+          .attr("y", 0)
+          .attr("width", x_scale(self.startTime + self.tomatoTime))
+          .attr("height", 50) // TODO: extracted from html 
           .attr("fill", function(d) { return getRandomColor();}); 
       }, self.tomatoTime)
     },
