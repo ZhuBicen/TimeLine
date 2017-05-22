@@ -24,7 +24,7 @@ function notifyRest(restTime) {
 	}, restTime);  // 5 minues rest
 
     notification.onclick = function () {
-      window.open("http://stackoverflow.com/a/13328397/1269037");      
+      // window.open("http://stackoverflow.com/a/13328397/1269037");      
     };
 
   }

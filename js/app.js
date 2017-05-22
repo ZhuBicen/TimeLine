@@ -5,7 +5,7 @@
 
 Vue.component('todo-item', {
   props: ['id', 'todo'],
-  template: '<li class="list-group-item"  v-bind:class="{disabled: todo.done}" v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active = false" >' + 
+  template: '<li v-show="!todo.hide" class="list-group-item"  v-bind:class="{disabled: todo.done}" v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active = false" >' + 
     '{{ todo.text }} {{ todo.used.length }}/{{todo.estimate}}' + 
     '<button class="btn btn-default" v-on:click="$emit(\'start\', id)" v-show="todo.active && !todo.done" type="button" title="开始一个番茄" >Start</button>' +
     '<button class="btn btn-default" v-on:click="$emit(\'done\', id)" v-show="todo.active && !todo.done" type="button" title="完成任务" >Done</button>' +
@@ -150,10 +150,10 @@ var app = new Vue({
     },
     delete: function(taskId) {
       console.info("Delete", taskId);
-      this.todoList.splice(taskId, 1);
+      this.todoList[taskId].hide = true;
     },
     newTask: function () {
-	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:this.estimatedTomato, used:[], done: false });
+	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:this.estimatedTomato, used:[], done: false , hide: false});
       this.newTaskContent = "Please input new task";
       this.estimatedTomato = 1;
     }
