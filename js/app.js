@@ -22,14 +22,25 @@ function getRandomColor() {
     return color;
     //  '#'+Math.floor(Math.random()*16777215).toString(16);
 }
+var global_work_id = -1;
+window.onbeforeunload = function() {
+  console.log("Before unload event");
+  if (global_work_id == -1) {
+      console.log("Not working");
+      return undefined;
+  }
+  return 'Are you sure you want to leave?';
+};
+
+
 var x_scale;
 var app = new Vue({
   el: '#app',
 
   data: {
     radius: 40,
-    tomatoTime: 25 * 60 * 1000, // million seconds
-    restTime: 5 * 60 * 1000,
+    tomatoTime: 2 * 60 * 1000, // million seconds
+    restTime: 1 * 60 * 1000,
     newTaskContent: "Please input new task",
     estimatedTomato: 1,
     workId: -1,
@@ -106,7 +117,7 @@ var app = new Vue({
   watch: {
     todoList: {
       handler: function (val, oldVal) {
-        console.log('a thing changed');
+        console.log('a thing changed', new Date().getTime());
         localStorage.setItem("todoItems", JSON.stringify(this.todoList));
       },
       deep: true
@@ -115,6 +126,7 @@ var app = new Vue({
   methods: {
     start: function(taskId) {
       this.workId = taskId;
+      global_work_id = taskId;
       this.percent = 0;
       console.info("Starting task for task:" + taskId);
       var self = this;
@@ -132,6 +144,7 @@ var app = new Vue({
 
         self.workId = -1;
         self.percent = 100;
+        global_work_id = -1;
         clearInterval(interval);
         notifyRest(self.restTime);
 
