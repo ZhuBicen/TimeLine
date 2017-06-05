@@ -39,8 +39,8 @@ var app = new Vue({
 
   data: {
     radius: 40,
-    tomatoTime: 2 * 60 * 1000, // million seconds
-    restTime: 1 * 60 * 1000,
+    tomatoTime: 25 * 60 * 1000, // million seconds
+    restTime: 5 * 60 * 1000,
     newTaskContent: "Please input new task",
     estimatedTomato: 1,
     workId: -1,
