@@ -32,6 +32,16 @@ window.onbeforeunload = function() {
   return 'Are you sure you want to leave?';
 };
 
+var g_TomatoTime;
+var g_RestTime;
+
+if (window.location.hostname == "localhost") { // for debug purpose
+    g_TomatoTime = 1; // minutes
+    g_RestTime = 0.5;
+} else {
+    g_TomatoTime = 25;
+    g_RestTime = 5;
+}
 
 var x_scale;
 var app = new Vue({
@@ -39,8 +49,8 @@ var app = new Vue({
 
   data: {
     radius: 40,
-    tomatoTime: 25 * 60 * 1000, // million seconds
-    restTime: 5 * 60 * 1000,
+    tomatoTime: g_TomatoTime * 60 * 1000, // million seconds
+    restTime: g_RestTime * 60 * 1000,
     newTaskContent: "Please input new task",
     estimatedTomato: 1,
     workId: -1,
@@ -48,6 +58,8 @@ var app = new Vue({
     todoList: [],
     startTime: 0,
     endTime: 0,
+    tomatoFinshTimeout: undefined,
+    statusUpdateInterval: undefined,
   },
   created: function() {
     ////////////////////////////////////
@@ -132,20 +144,20 @@ var app = new Vue({
       var self = this;
       var d = new Date();
       var startTime = d.getTime();
-      var interval = setInterval(function() {
+      this.statusUpdateInterval = setInterval(function() {
         self.percent = self.percent + 10;
         var n = new Date();
         var nowTime = n.getTime();
         self.percent = ((nowTime - startTime) * 100)/ (self.tomatoTime);
         console.log("current percent:", self.percent);
       }, 1000 * 3)
-      setTimeout(function() {
+      this.tomatoFinshTimeout = setTimeout(function() {
         self.todoList[self.workId].used.push(startTime);
 
         self.workId = -1;
         self.percent = 100;
         global_work_id = -1;
-        clearInterval(interval);
+        clearInterval(self.statusUpdateInterval);
         notifyRest(self.restTime);
 
         d3.select("#TimeLine")
@@ -169,6 +181,13 @@ var app = new Vue({
 	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:this.estimatedTomato, used:[], done: false , hide: false});
       this.newTaskContent = "Please input new task";
       this.estimatedTomato = 1;
+    },
+    close: function() {
+      console.info("closing, but can not emmitted")
+      this.workId = -1;
+      global_work_id = -1;
+      clearInterval(this.statusUpdateInterval);
+      clearTimeout(this.tomatoFinshTimeout);
     }
   }
 })
