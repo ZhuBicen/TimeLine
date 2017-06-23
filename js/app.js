@@ -43,7 +43,6 @@ if (window.location.hostname == "localhost") { // for debug purpose
     g_RestTime = 5;
 }
 
-var x_scale;
 var app = new Vue({
   el: '#app',
 
@@ -60,6 +59,7 @@ var app = new Vue({
     endTime: 0,
     tomatoFinshTimeout: undefined,
     statusUpdateInterval: undefined,
+    xScale: undefined,
   },
   created: function() {
     ////////////////////////////////////
@@ -98,11 +98,11 @@ var app = new Vue({
       var timeLineSvg = document.getElementById('TimeLine');
       console.log('client', timeLineSvg.clientWidth + ' x ' + timeLineSvg.clientHeight);
 
-      x_scale = d3.scaleLinear()
+      this.xScale = d3.scaleLinear()
                             .range([0, timeLineSvg.clientWidth])
                             .domain([self.startTime, self.endTime]);
 
-
+      var self = this
       d3.select("#TimeLine")
       .append("line")
       .attr("x1", 0)
@@ -117,9 +117,9 @@ var app = new Vue({
       .data(tomatoesToShow)
       .enter()
       .append("rect")
-      .attr("x", function(d) { return x_scale(d); })
+      .attr("x", function(d) { return self.xScale(d); })
       .attr("y", 0)
-      .attr("width", x_scale(self.startTime + self.tomatoTime))
+      .attr("width", self.xScale(self.startTime + self.tomatoTime))
       .attr("height", 50)// to be extract as const, deinfed in html
       .attr("fill", function(d) { return getRandomColor();}); 
 
@@ -162,9 +162,9 @@ var app = new Vue({
 
         d3.select("#TimeLine")
           .append("rect")
-          .attr("x", function(d) { return x_scale(startTime); })
+          .attr("x", function(d) { return self.xScale(startTime); })
           .attr("y", 0)
-          .attr("width", x_scale(self.startTime + self.tomatoTime))
+          .attr("width", self.xScale(self.startTime + self.tomatoTime))
           .attr("height", 50) // TODO: extracted from html 
           .attr("fill", function(d) { return getRandomColor();}); 
       }, self.tomatoTime)
