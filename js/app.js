@@ -7,9 +7,9 @@ Vue.component('todo-item', {
   props: ['id', 'todo'],
   template: '<li v-show="!todo.hide" class="list-group-item"  v-bind:class="{disabled: todo.done}" v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active = false" >' + 
     '{{ todo.text }} {{ todo.used.length }}/{{todo.estimate}}' + 
-    '<button class="btn btn-default btn-xs" v-on:click="$emit(\'start\', id)" v-show="todo.active && !todo.done" type="button" title="开始一个番茄" >Start</button>' +
-    '<button class="btn btn-default btn-xs" v-on:click="$emit(\'done\', id)" v-show="todo.active && !todo.done" type="button" title="完成任务" >Done</button>' +
-    '<button class="btn btn-default btn-xs" v-on:click="$emit(\'delete\', id)" v-show="todo.active && todo.done" type="button" title="删除任务" >Delete</button>' +
+    '<button class="btn btn-success btn-xs" v-on:click="$emit(\'start\', id)" v-show="todo.active && !todo.done" type="button" title="开始一个番茄" >Start</button>' +
+    '<button class="btn btn-success btn-xs" v-on:click="$emit(\'done\', id)" v-show="todo.active && !todo.done" type="button" title="完成任务" >Done</button>' +
+    '<button class="btn btn-success btn-xs" v-on:click="$emit(\'delete\', id)" v-show="todo.active && todo.done" type="button" title="删除任务" >Delete</button>' +
     '</li>'
 })
 
