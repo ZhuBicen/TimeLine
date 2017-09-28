@@ -7,10 +7,26 @@ Vue.component('todo-item', {
   props: ['id', 'todo'],
   template: '<li v-show="!todo.hide" class="list-group-item"  v-bind:class="{disabled: todo.done}" v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active = false" >' + 
     '{{ todo.text }} {{ todo.used.length }}/{{todo.estimate}}' + 
-    '<button class="btn btn-success btn-xs" v-on:click="$emit(\'start\', id)" v-show="todo.active && !todo.done" type="button" title="开始一个番茄" >Start</button>' +
+    '<button class="btn btn-success btn-xs" v-on:click="start" v-show="todo.active && !todo.done" type="button" title="开始一个番茄" >Start</button>' +
     '<button class="btn btn-success btn-xs" v-on:click="$emit(\'done\', id)" v-show="todo.active && !todo.done" type="button" title="完成任务" >Done</button>' +
     '<button class="btn btn-success btn-xs" v-on:click="$emit(\'delete\', id)" v-show="todo.active && todo.done" type="button" title="删除任务" >Delete</button>' +
-    '</li>'
+	'<button class="btn btn-success btn-xs" v-on:click="follow" v-show="!todo.followToday && todo.active" type="button" title="今日完成">Follow</button>' + 
+	'<button class="btn btn-success btn-xs" v-on:click="unfollow" v-show="todo.followToday && todo.active" type="button" title="以后再说">Unfollow</button>' + 
+    '</li>',
+	
+	methods: {
+    
+		start: function() {
+			this.$emit('start', this.id);
+		},		
+		follow: function() {
+			this.$emit('follow', this.id);
+		},		
+		unfollow: function() {
+			this.$emit('unfollow', this.id);
+		}
+		
+	}	
 })
 
 function getRandomColor() {
@@ -136,6 +152,7 @@ var app = new Vue({
     }
   },
   methods: {
+
     start: function(taskId) {
       this.workId = taskId;
       global_work_id = taskId;
@@ -178,12 +195,22 @@ var app = new Vue({
       this.todoList[taskId].hide = true;
     },
     newTask: function () {
-	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:this.estimatedTomato, used:[], done: false , hide: false});
-      this.newTaskContent = "Please input new task";
-      this.estimatedTomato = 1;
+	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:this.estimatedTomato, used:[], done: false , hide: false, followToday: false});
+      	this.newTaskContent = "Please input new task";
+      	this.estimatedTomato = 1;
     },
+
+	follow: function(taskId) {
+		console.info("follow", taskId);
+		this.todoList[taskId].followToday = true;
+	},
+	
+	unfollow: function(taskId) {
+		console.info("unfollow", taskId);
+		this.todoList[taskId].followToday = false;
+	},
     close: function() {
-      console.info("closing, but can not emmitted")
+      console.info("closing, but can not emmitted");
       this.workId = -1;
       global_work_id = -1;
       clearInterval(this.statusUpdateInterval);

@@ -56,7 +56,7 @@
   <div class="panel-heading">Task List</div>
   <div class="panel-body">
     <ol class="list-group">
-      <todo-item v-on:start="start" v-on:done="done"  v-on:delete="delete" v-for="(index, item) in todoList" v-bind:todo="item" v-bind:id="index"></todo-item>
+      <todo-item v-on:start="start" v-on:done="done"  v-on:follow="follow" v-on:unfollow= "unfollow" v-on:delete="delete" v-for="(index, item) in todoList" v-bind:todo="item" v-bind:id="index"></todo-item>
     </ol>
   </div>
 
