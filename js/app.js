@@ -78,7 +78,14 @@ var app = new Vue({
     xScale: undefined,
   },
   created: function() {
-    ////////////////////////////////////
+	{
+		var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+		var lastDay = new Date(2018, 0, 1);
+		var now = new Date();
+		var diffDays = Math.round(Math.abs((now.getTime() - lastDay.getTime())/(oneDay)));
+		document.getElementById("CountDownDays").innerHTML = diffDays;
+    }
+	////////////////////////////////////
     // localStorage.clear();
     ////////////////////////////////////
     console.debug("VUE create is called");
