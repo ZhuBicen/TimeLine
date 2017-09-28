@@ -80,7 +80,7 @@ var app = new Vue({
   created: function() {
 	{
 		var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-		var lastDay = new Date(2018, 0, 1);
+		var lastDay = new Date(2018, 0, 1); // 0 ~ 11 month
 		var now = new Date();
 		var diffDays = Math.round(Math.abs((now.getTime() - lastDay.getTime())/(oneDay)));
 		document.getElementById("CountDownDays").innerHTML = diffDays;
@@ -89,25 +89,38 @@ var app = new Vue({
     // localStorage.clear();
     ////////////////////////////////////
     console.debug("VUE create is called");
+	var self = this;
+	
     todoItems = JSON.parse(localStorage.getItem("todoItems"));
     if (todoItems) {
-      this.todoList = todoItems;
+		
+		todoItems.forEach(function(task) {
+			if (!task.hasOwnProperty("followToday")) {
+				task.followToday = false;
+			}
+		});	
+		
+		todoItems.forEach(function(task) {
+			if (task.followToday) {
+				self.todoList.push(task);
+			}
+		});
+		
+		todoItems.forEach(function(task) {
+			if (!task.followToday) {
+				self.todoList.push(task);
+			}
+		});
+		
+      // this.todoList = todoItems;
     }
     var now = new Date();
-    console.log("Now time is:", now.getTime());
-    console.log("Now time is:", now);
-
     var today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
     this.startTime = today.getTime();
-
-    console.log("Start time is:", today);
-    console.log("Start time is:", this.startTime);
-
     this.endTime = this.startTime + 24  * 60 * 60 * 1000;
-    console.log("End time is:", this.endTime);
 
     var tomatoesToShow = [];
-    var self = this;
+    
     this.todoList.forEach(function(taskItem) {
       taskItem.used.forEach(function(tomato) {
         if (tomato >= self.startTime && tomato <= self.endTime) {
