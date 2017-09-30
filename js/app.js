@@ -3,29 +3,47 @@
   template: '#modal-template'
 })
 
+
 Vue.component('todo-item', {
   props: ['id', 'todo'],
   template: '<li v-show="!todo.hide" class="list-group-item"  v-bind:class="{disabled: todo.done}" v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active = false" >' + 
     '{{ todo.text }} {{ todo.used.length }}/{{todo.estimate}}' + 
     '<button class="btn btn-success btn-xs" v-on:click="start" v-show="todo.active && !todo.done" type="button" title="开始一个番茄" >Start</button>' +
-    '<button class="btn btn-success btn-xs" v-on:click="$emit(\'done\', id)" v-show="todo.active && !todo.done" type="button" title="完成任务" >Done</button>' +
-    '<button class="btn btn-success btn-xs" v-on:click="$emit(\'delete\', id)" v-show="todo.active && todo.done" type="button" title="删除任务" >Delete</button>' +
-	'<button class="btn btn-success btn-xs" v-on:click="follow" v-show="!todo.followToday && todo.active" type="button" title="今日完成">Follow</button>' + 
-	'<button class="btn btn-success btn-xs" v-on:click="unfollow" v-show="todo.followToday && todo.active" type="button" title="以后再说">Unfollow</button>' + 
+    '<button class="btn btn-success btn-xs" v-on:click="done" v-show="todo.active && !todo.done" type="button" title="完成任务" >Done</button>' +
+    '<button class="btn btn-success btn-xs" v-on:click="delete" v-show="todo.active && todo.done" type="button" title="删除任务" >Delete</button>' +
+	'<button class="btn btn-success btn-xs" v-on:click="unfollow" v-show= "todo.active" type="button" title="以后再说">Unfollow</button>' + 
     '</li>',
 	
 	methods: {
-    
 		start: function() {
 			this.$emit('start', this.id);
-		},		
-		follow: function() {
-			this.$emit('follow', this.id);
+		},
+		delete: function() {
+			this.$emit('deleteTodoItem', this.id);
 		},		
 		unfollow: function() {
 			this.$emit('unfollow', this.id);
 		}
 		
+	}	
+})
+
+Vue.component('future-item', {
+  props: ['id', 'todo'],
+  template: '<li class="list-group-item"  v-show="!todo.hide" v-bind:class="{disabled: todo.done}" v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active = false" >' + 
+    '{{ todo.text }} {{ todo.used.length }}/{{todo.estimate}}' + 
+    '<button class="btn btn-success btn-xs" v-on:click="delete" v-show="todo.active" type="button" title="删除任务" >Delete</button>' +
+	'<button class="btn btn-success btn-xs" v-on:click="follow" v-show="todo.active" type="button" title="今日完成">Follow</button>' + 
+    '</li>',
+	
+	methods: {
+		delete: function() {
+			console.log("Emitting deleteFutureItem");
+			this.$emit('deleteFutureItem', this.id);
+		},
+		follow: function() {
+			this.$emit('follow', this.id);
+		},		
 	}	
 })
 
@@ -71,6 +89,7 @@ var app = new Vue({
     workId: -1,
     percent: 0,
     todoList: [],
+	futureList: [],
     startTime: 0,
     endTime: 0,
     tomatoFinshTimeout: undefined,
@@ -93,27 +112,14 @@ var app = new Vue({
 	
     todoItems = JSON.parse(localStorage.getItem("todoItems"));
     if (todoItems) {
-		
-		todoItems.forEach(function(task) {
-			if (!task.hasOwnProperty("followToday")) {
-				task.followToday = false;
-			}
-		});	
-		
-		todoItems.forEach(function(task) {
-			if (task.followToday) {
-				self.todoList.push(task);
-			}
-		});
-		
-		todoItems.forEach(function(task) {
-			if (!task.followToday) {
-				self.todoList.push(task);
-			}
-		});
-		
-      // this.todoList = todoItems;
+		this.todoList = todoItems;
     }
+	
+	futureItems = JSON.parse(localStorage.getItem("futureItems"));
+	if (futureItems) {
+		this.futureList = futureItems;
+	}
+	
     var now = new Date();
     var today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
     this.startTime = today.getTime();
@@ -165,8 +171,16 @@ var app = new Vue({
   watch: {
     todoList: {
       handler: function (val, oldVal) {
-        console.log('a thing changed', new Date().getTime());
+        // console.log('todo list changed', new Date().getTime());
         localStorage.setItem("todoItems", JSON.stringify(this.todoList));
+      },
+      deep: true
+    },
+	
+	futureList: {
+      handler: function (val, oldVal) {
+        // console.log('future list changed', new Date().getTime());
+        localStorage.setItem("futureItems", JSON.stringify(this.futureList));
       },
       deep: true
     }
@@ -210,10 +224,17 @@ var app = new Vue({
       console.info("Make task done:", taskId);
       this.todoList[taskId].done = true;
     },
-    delete: function(taskId) {
+	
+    deleteTodoItem: function(taskId) {
       console.info("Delete", taskId);
       this.todoList[taskId].hide = true;
     },
+	
+	deleteFutureItem: function(taskId) {
+      console.info("Delete", taskId);
+      this.futureListList[taskId].hide = true;
+    },
+	
     newTask: function () {
 	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:this.estimatedTomato, used:[], done: false , hide: false, followToday: false});
       	this.newTaskContent = "Please input new task";
@@ -222,13 +243,20 @@ var app = new Vue({
 
 	follow: function(taskId) {
 		console.info("follow", taskId);
-		this.todoList[taskId].followToday = true;
+		this.futureList[taskId].active = false;
+		this.todoList.push(this.futureList[taskId]);
+		this.futureList.splice(taskId, 1);		
 	},
 	
 	unfollow: function(taskId) {
 		console.info("unfollow", taskId);
-		this.todoList[taskId].followToday = false;
+		this.todoList[taskId].active = false;
+		this.futureList.push(this.todoList[taskId]);
+		console.info(this.futureList);
+		this.todoList.splice(taskId, 1);
+		
 	},
+	
     close: function() {
       console.info("closing, but can not emmitted");
       this.workId = -1;
