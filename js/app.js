@@ -19,7 +19,7 @@ Vue.component('todo-item', {
 			this.$emit('start', this.id);
 		},
 		delete: function() {
-			this.$emit('delete', this.id, "today");
+			this.$emit('delete', this.id);
 		},		
 		unfollow: function() {
 			this.$emit('unfollow', this.id);
@@ -41,8 +41,7 @@ Vue.component('future-item', {
 	
 	methods: {
 		delete: function() {
-			console.log("Emitting deleteFutureItem");
-			this.$emit('delete', this.id, "future");
+			this.$emit('delete', this.id);
 		},
 		follow: function() {
 			this.$emit('follow', this.id);
@@ -245,7 +244,7 @@ var app = new Vue({
 	
 	deleteFutureItem: function(taskId) {
       console.info("Delete", taskId);
-      this.futureListList[taskId].hide = true;
+      this.futureList[taskId].hide = true;
     },
 	
     newTask: function () {
