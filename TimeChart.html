@@ -61,7 +61,7 @@
   	<div class="panel-heading">Today</div>
   	<div class="panel-body">
   	  <ol class="list-group">
-  	    <todo-item v-on:start="start" v-on:done="done" v-on:unfollow= "unfollow" v-on:deleteTodoItem="deleteTodoItem" v-for="(index, item) in todoList" v-bind:todo="item" v-bind:id="index"></todo-item>
+  	    <todo-item v-on:start="start" v-on:done="done" v-on:unfollow= "unfollow" v-on:delete="delete" v-on:deleteTodoItem="deleteTodoItem" v-for="(index, item) in todoList" v-bind:todo="item" v-bind:id="index"></todo-item>
   	  </ol>
 	</div>	
   </div>
@@ -70,7 +70,7 @@
   	<div class="panel-heading">Future</div>
   	<div class="panel-body">
 		<ol class="list-group">
-      		<future-item v-on:follow="follow" v-on:deleteFutureItem="deleteFutureItem" v-for="(index, item) in futureList" v-bind:todo="item" v-bind:id="index"></future-item>
+      		<future-item v-on:follow="follow" v-on:delete="delete" v-on:deleteFutureItem="deleteFutureItem" v-for="(index, item) in futureList" v-bind:todo="item" v-bind:id="index"></future-item>
     	</ol>
   	</div>
   </div>
