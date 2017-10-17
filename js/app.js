@@ -6,14 +6,13 @@
 
 Vue.component('todo-item', {
   props: ['id', 'todo'],
-  template: '<li v-show="!todo.hide" class="list-group-item"  v-bind:class="{disabled: todo.done}" v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active = false" >' + 
+  template: '<li v-show="!todo.hide" class="list-group-item"  v-bind:class="{\'list-group-item-success\': todo.punchIn}" v-on:mouseover="todo.active = true" v-on:mouseleave="todo.active = false" >' + 
     '{{ todo.text }} {{ todo.used.length }}/{{todo.estimate}}' + 
     '<button class="btn btn-success btn-xs" v-on:click="start" v-show="todo.active && !todo.done" type="button" title="开始一个番茄" >Start</button>' +
     '<button class="btn btn-success btn-xs" v-on:click="done" v-show="todo.active && !todo.done" type="button" title="完成任务" >Done</button>' +
     '<button class="btn btn-success btn-xs" v-on:click="delete" v-show="todo.active && todo.done" type="button" title="删除任务" >Delete</button>' +
 	'<button class="btn btn-success btn-xs" v-on:click="unfollow" v-show= "todo.active" type="button" title="以后再说">Unfollow</button>' + 
-    '</li>',
-	
+    '</li>',	
 	methods: {
 		start: function() {
 			this.$emit('start', this.id);
@@ -37,8 +36,7 @@ Vue.component('future-item', {
     '{{ todo.text }} {{ todo.used.length }}/{{todo.estimate}}' + 
     '<button class="btn btn-success btn-xs" v-on:click="delete" v-show="todo.active" type="button" title="删除任务" >Delete</button>' +
 	'<button class="btn btn-success btn-xs" v-on:click="follow" v-show="todo.active" type="button" title="今日完成">Follow</button>' + 
-    '</li>',
-	
+    '</li>',	
 	methods: {
 		delete: function() {
 			this.$emit('delete', this.id);
@@ -130,13 +128,16 @@ var app = new Vue({
     var tomatoesToShow = [];
     
     this.todoList.forEach(function(taskItem) {
+	  taskItem.punchIn = false;
       taskItem.used.forEach(function(tomato) {
         if (tomato >= self.startTime && tomato <= self.endTime) {
             tomatoesToShow.push(tomato);
+			taskItem.punchIn = true;
         }
       })
     })
 
+    console.log(this.todoList);
     console.log(tomatoesToShow);
 
       var timeLineSvg = document.getElementById('TimeLine');
