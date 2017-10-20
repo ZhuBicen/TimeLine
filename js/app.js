@@ -208,10 +208,12 @@ var app = new Vue({
       this.tomatoFinshTimeout = setTimeout(function() {
         self.todoList[self.workId].used.push(startTime);
 
+		self.todoList[global_work_id].punchIn = true;
         self.workId = -1;
         self.percent = 100;
         global_work_id = -1;
         clearInterval(self.statusUpdateInterval);
+		
         notifyRest(self.restTime);
 
         d3.select("#TimeLine")
@@ -249,7 +251,7 @@ var app = new Vue({
     },
 	
     newTask: function () {
-	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:this.estimatedTomato, used:[], done: false , hide: false, followToday: false});
+	    this.todoList.push({ active: false, text: this.newTaskContent, estimate:this.estimatedTomato, used:[], done: false , hide: false, followToday: false, punchIn: false});
       	this.newTaskContent = "Please input new task";
       	this.estimatedTomato = 1;
     },
@@ -269,13 +271,5 @@ var app = new Vue({
 		this.todoList.splice(taskId, 1);
 		
 	},
-	
-    close: function() {
-      console.info("closing, but can not emmitted");
-      this.workId = -1;
-      global_work_id = -1;
-      clearInterval(this.statusUpdateInterval);
-      clearTimeout(this.tomatoFinshTimeout);
-    }
   }
 })
