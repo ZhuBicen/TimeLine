@@ -69,7 +69,7 @@ window.onbeforeunload = function() {
 var g_TomatoTime;
 var g_RestTime;
 
-if (window.location.hostname == "localhost") { // for debug purpose
+if (window.location.port == 3001) { // for debug purpose
     g_TomatoTime = 1; // minutes
     g_RestTime = 0.5;
 } else {
@@ -99,7 +99,7 @@ var app = new Vue({
   created: function() {
 	{
 		var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-		var lastDay = new Date(2018, 0, 1); // 0 ~ 11 month
+		var lastDay = new Date(2017, 11, 31); // 0 ~ 11 month
 		var now = new Date();
 		var diffDays = Math.round(Math.abs((now.getTime() - lastDay.getTime())/(oneDay)));
 		document.getElementById("CountDownDays").innerHTML = diffDays;
